@@ -14,13 +14,6 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        if (Auth::guard('sanctum')->check()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Anda sudah login, silakan logout terlebih dahulu',
-            ], 403);
-        }
-
         $validator = Validator::make($request->all(), [
             'username' => 'required|string',
             'password' => 'required|string',
@@ -40,8 +33,8 @@ class AuthController extends Controller
             ], 401);
         }
 
-        /** @var \App\Models\User $admin */
-        $admin = Auth::user();
+        $admin = $request->user();
+
         $token = $admin->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -60,16 +53,20 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * LOGOUT
-     */
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        try {
+            $request->user()->currentAccessToken()->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Logout berhasil',
-        ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Logout berhasil',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal logout, token tidak valid',
+            ], 401);
+        }
     }
 }
