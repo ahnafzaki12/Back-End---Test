@@ -16,7 +16,7 @@ class EmployeeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image' => $this->image, 
+            'image' => $this->image ? asset('storage/' . $this->image) : null,
             'name' => $this->name,
             'phone' => $this->phone,
             'division' => [
