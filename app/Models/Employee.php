@@ -2,16 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Division extends Model
+class Employee extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'image',
+        'name',
+        'phone',
+        'division_id',
+        'position',
+    ];
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -23,8 +29,8 @@ class Division extends Model
         });
     }
 
-    public function employees()
+    public function division()
     {
-        return $this->hasMany(Employee::class);
+        return $this->belongsTo(Division::class);
     }
 }
