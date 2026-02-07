@@ -7,6 +7,7 @@ use App\Http\Resources\EmployeeResource;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
 {
@@ -55,7 +56,7 @@ class EmployeeController extends Controller
             'image'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'name'     => 'required|string|max:255',
             'phone'    => 'required|string|max:20',
-            'division' => 'required|exists:divisions,id', 
+            'division' => 'required|exists:divisions,id',
             'position' => 'required|string|max:255',
         ]);
 
@@ -74,7 +75,7 @@ class EmployeeController extends Controller
             }
 
             Employee::create([
-                'image'       => $imagePath, 
+                'image'       => $imagePath,
                 'name'        => $request->name,
                 'phone'       => $request->phone,
                 'division_id' => $request->division,
@@ -84,13 +85,62 @@ class EmployeeController extends Controller
             return response()->json([
                 'status'  => 'success',
                 'message' => 'Karyawan berhasil ditambahkan',
-            ], 201); 
-
+            ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'status'  => 'error',
                 'message' => 'Terjadi kesalahan pada server',
             ], 500);
         }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $employee = Employee::find($id);
+
+        if (!$employee) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data karyawan tidak ditemukan',
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'image'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'name'     => 'required|string|max:255',
+            'phone'    => 'required|string|max:20',
+            'division' => 'required|exists:divisions,id',
+            'position' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        $data = [
+            'name'        => $request->name,
+            'phone'       => $request->phone,
+            'division_id' => $request->division,
+            'position'    => $request->position,
+        ];
+
+        if ($request->hasFile('image')) {
+            if ($employee->image) {
+                $oldPath = str_replace(asset('storage') . '/', '', $employee->image);
+                Storage::disk('public')->delete($oldPath);
+            }
+
+            $data['image'] = $request->file('image')->store('employees', 'public');
+        }
+
+        $employee->update($data);
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Data karyawan berhasil diperbarui',
+        ]);
     }
 }
