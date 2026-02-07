@@ -10,12 +10,14 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'name' => 'Admin Aksamedia',
-            'username' => 'admin',
-            'phone' => '08123456789',
-            'email' => 'admin@aksamedia.test',
-            'password' => Hash::make('pastibisa'),
-        ]);
+        User::updateOrCreate(
+            ['username' => 'admin'], 
+            [
+                'name' => 'Admin Aksamedia',
+                'phone' => '08123456789',
+                'email' => 'admin@aksamedia.test',
+                'password' => Hash::make('admin'),
+            ]
+        );
     }
 }
