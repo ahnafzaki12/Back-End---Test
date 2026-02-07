@@ -143,4 +143,38 @@ class EmployeeController extends Controller
             'message' => 'Data karyawan berhasil diperbarui',
         ]);
     }
+
+    public function destroy($id)
+    {
+        $employee = Employee::find($id);
+
+        if (!$employee) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data karyawan tidak ditemukan',
+            ], 404);
+        }
+
+        try {
+            if ($employee->image) {
+                $imagePath = str_replace(asset('storage') . '/', '', $employee->image);
+
+                if (Storage::disk('public')->exists($imagePath)) {
+                    Storage::disk('public')->delete($imagePath);
+                }
+            }
+
+            $employee->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data karyawan berhasil dihapus',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal menghapus data: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 }
