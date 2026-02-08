@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class BonusNilaiController extends Controller
 {
     public function nilaiRT()
     {
-        $results = DB::connection('mysql_bonus')
-            ->table('nilai')
+        $results = DB::table('nilai')
             ->select('nama', 'nisn', 'nama_pelajaran', 'skor')
             ->where('materi_uji_id', 7)
             ->where('nama_pelajaran', 'NOT LIKE', '%pelajaran_khusus%')
@@ -38,8 +36,7 @@ class BonusNilaiController extends Controller
 
     public function nilaiST()
     {
-        $results = DB::connection('mysql_bonus')
-            ->table('nilai')
+        $results = DB::table('nilai')
             ->select([
                 'nama',
                 'nisn',
