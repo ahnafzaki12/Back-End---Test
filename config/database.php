@@ -63,6 +63,17 @@ return [
             ]) : [],
         ],
 
+        'mysql_bonus' => [
+            'driver' => 'mysql',
+            'host' => env('DB_BONUS_HOST'),
+            'port' => env('DB_BONUS_PORT'),
+            'database' => env('DB_BONUS_DATABASE'),
+            'username' => env('DB_BONUS_USERNAME'),
+            'password' => env('DB_BONUS_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
@@ -148,7 +159,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 
