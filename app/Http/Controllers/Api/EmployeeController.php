@@ -28,7 +28,7 @@ class EmployeeController extends Controller
             return $q->where('division_id', $request->division_id);
         });
 
-        $employees = $query->paginate(10);
+        $employees = $query->paginate(5);
 
         return response()->json([
             'status' => 'success',
