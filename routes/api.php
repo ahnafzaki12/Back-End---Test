@@ -10,6 +10,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/divisions', [DivisionController::class, 'index']);
