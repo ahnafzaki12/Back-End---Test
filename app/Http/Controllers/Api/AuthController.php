@@ -74,11 +74,12 @@ class AuthController extends Controller
     {
         $admin = $request->user();
 
+        // Validasi: Pastikan tabel diarahkan ke 'users'
         $validator = Validator::make($request->all(), [
             'name'     => 'sometimes|required|string|max:255',
-            'username' => 'sometimes|required|string|max:255|unique:admins,username,' . $admin->id,
+            'username' => 'sometimes|required|string|max:255|unique:users,username,' . $admin->id,
             'phone'    => 'nullable|string|max:20',
-            'email'    => 'sometimes|required|email|max:255|unique:admins,email,' . $admin->id,
+            'email'    => 'sometimes|required|email|max:255|unique:users,email,' . $admin->id,
             'password' => 'nullable|string|min:6|confirmed',
         ]);
 
@@ -89,25 +90,12 @@ class AuthController extends Controller
             ], 422);
         }
 
-        if ($request->filled('name')) {
-            $admin->name = $request->name;
-        }
-
-        if ($request->filled('username')) {
-            $admin->username = $request->username;
-        }
-
-        if ($request->filled('phone')) {
-            $admin->phone = $request->phone;
-        }
-
-        if ($request->filled('email')) {
-            $admin->email = $request->email;
-        }
-
-        if ($request->filled('password')) {
-            $admin->password = bcrypt($request->password);
-        }
+        // Update data jika ada di request
+        if ($request->filled('name'))     $admin->name = $request->name;
+        if ($request->filled('username')) $admin->username = $request->username;
+        if ($request->filled('phone'))    $admin->phone = $request->phone;
+        if ($request->filled('email'))    $admin->email = $request->email;
+        if ($request->filled('password')) $admin->password = bcrypt($request->password);
 
         $admin->save();
 
